@@ -2,7 +2,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-load_dotenv
+load_dotenv()
 
 #list of nightscout url extensions to fetch specific data
 bolus_period = 2
@@ -20,9 +20,15 @@ command_list = ns_commands.keys()
 
 def fetch_ns(url_extension):
     url = os.getenv('NS_URL')
+    token = os.getenv('NS_TOKEN')
     print(url)
+    if url is None:
+        print("No .env file found, please create one")
     try:
-        response = requests.get(url)
+        # e.g. entries, treatments, profile, etc.
+        query = "/entries?"
+        fullURL = f"{url}{query}token={token}"
+        response = requests.get(fullURL)
         if response.status_code == 200:
             print(response.text)
             return(response.text)
